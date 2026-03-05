@@ -1,4 +1,4 @@
-package com.example.controldealmacen.data.database.entities
+package com.example.controldealmacen.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

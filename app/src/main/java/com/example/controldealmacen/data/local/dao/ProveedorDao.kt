@@ -1,10 +1,10 @@
-package com.example.controldealmacen.data.database.dao
+package com.example.controldealmacen.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.controldealmacen.data.database.entities.ProveedorEntity
+import com.example.controldealmacen.data.local.entities.ProveedorEntity
 
 @Dao
 interface ProveedorDao {
@@ -16,8 +16,8 @@ interface ProveedorDao {
 
     // Obtenemos solo los proveedores con los que seguimos trabajando
     @Query("SELECT * FROM proveedores WHERE habilitado = 1")
-    suspend fun obtenerProveedoresActivos(): List<ProveedorEntity>
+    suspend fun getProveedoresActivos(): List<ProveedorEntity>
 
     @Query("SELECT * FROM proveedores WHERE id = :id")
-    suspend fun obtenerProveedorPorId(id: Int): ProveedorEntity?
+    suspend fun getProveedorById(id: Int): ProveedorEntity?
 }

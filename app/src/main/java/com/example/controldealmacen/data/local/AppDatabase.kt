@@ -1,11 +1,19 @@
-package com.example.controldealmacen.data.database
+package com.example.controldealmacen.data.local
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.controldealmacen.data.database.dao.*
-import com.example.controldealmacen.data.database.entities.*
+import com.example.controldealmacen.data.local.dao.AlbaranDao
+import com.example.controldealmacen.data.local.dao.HistorialDao
+import com.example.controldealmacen.data.local.dao.PerfilDao
+import com.example.controldealmacen.data.local.dao.ProductoDao
+import com.example.controldealmacen.data.local.dao.ProveedorDao
+import com.example.controldealmacen.data.local.entities.AlbaranEntity
+import com.example.controldealmacen.data.local.entities.HistorialEntity
+import com.example.controldealmacen.data.local.entities.PerfilEntity
+import com.example.controldealmacen.data.local.entities.ProductoEntity
+import com.example.controldealmacen.data.local.entities.ProveedorEntity
 
 @Database(
     entities = [

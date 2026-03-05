@@ -1,4 +1,4 @@
-package com.example.controldealmacen.data.database.entities
+package com.example.controldealmacen.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
             entity = ProveedorEntity::class,
             parentColumns = ["id"],
             childColumns = ["proveedorId"],
-            onDelete = ForeignKey.RESTRICT // RESTRICT por seguridad
+            onDelete = ForeignKey.Companion.RESTRICT // RESTRICT por seguridad
         )
     ],
     indices = [Index("proveedorId")]

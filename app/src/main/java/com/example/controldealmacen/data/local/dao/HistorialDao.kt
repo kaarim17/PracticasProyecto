@@ -1,9 +1,9 @@
-package com.example.controldealmacen.data.database.dao
+package com.example.controldealmacen.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.controldealmacen.data.database.entities.HistorialEntity
+import com.example.controldealmacen.data.local.entities.HistorialEntity
 
 @Dao
 interface HistorialDao {
@@ -12,11 +12,11 @@ interface HistorialDao {
     suspend fun insert(interaccion: HistorialEntity)
 
     // La consulta para el Diario
-    // Ordena por fecha descendente y coge solo 10.
+    // Ordena por fecha descendente y los 10 ultimos
     @Query("SELECT * FROM historial ORDER BY fechaHora DESC LIMIT 10")
-    suspend fun obtenerUltimasInteracciones(): List<HistorialEntity>
+    suspend fun getLastInteracciones(): List<HistorialEntity>
 
-    // Por si un usuario quiere ver solo sus propios movimientos
+    // Si un usuario quiere ver sus propios movimientos
     @Query("SELECT * FROM historial WHERE perfilId = :idPerfil ORDER BY fechaHora DESC")
-    suspend fun obtenerInteraccionesPorPerfil(idPerfil: Int): List<HistorialEntity>
+    suspend fun getInteraccionesByPerfil(idPerfil: Int): List<HistorialEntity>
 }

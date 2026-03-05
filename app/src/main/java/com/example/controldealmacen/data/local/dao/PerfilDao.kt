@@ -1,9 +1,9 @@
-package com.example.controldealmacen.data.database.dao
+package com.example.controldealmacen.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.controldealmacen.data.database.entities.PerfilEntity
+import com.example.controldealmacen.data.local.entities.PerfilEntity
 
 @Dao
 interface PerfilDao {
@@ -11,5 +11,5 @@ interface PerfilDao {
     suspend fun insert(perfil: PerfilEntity)
 
     @Query("SELECT * FROM perfiles WHERE habilitado = 1")
-    suspend fun obtenerPerfilesActivos(): List<PerfilEntity>
+    suspend fun getPerfilesActivos(): List<PerfilEntity>
 }
