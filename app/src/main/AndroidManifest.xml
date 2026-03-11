@@ -24,9 +24,17 @@
         <!-- 2. La MainActivity ahora es una actividad secundaria -->
         <activity
             android:name=".ui.login.MainActivity"
-            android:exported="false">
-            <!-- Se quita el intent-filter de aquí para que no sea la pantalla de inicio -->
-        </activity>
+            android:exported="false" />
+
+        <!-- 3. Actividad de Productos -->
+        <activity
+            android:name=".ui.inventory.ProductosActivity"
+            android:exported="false" />
+
+        <!-- 4. Actividad para Añadir Producto -->
+        <activity
+            android:name=".ui.inventory.AddProductoActivity"
+            android:exported="false" />
 
     </application>
 

@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase // Importante para el Callback
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.controldealmacen.data.local.dao.AlbaranDao
 import com.example.controldealmacen.data.local.dao.HistorialDao
 import com.example.controldealmacen.data.local.dao.PerfilDao
@@ -15,7 +15,7 @@ import com.example.controldealmacen.data.local.entities.HistorialEntity
 import com.example.controldealmacen.data.local.entities.PerfilEntity
 import com.example.controldealmacen.data.local.entities.ProductoEntity
 import com.example.controldealmacen.data.local.entities.ProveedorEntity
-import kotlinx.coroutines.CoroutineScope // Importante para insertar sin bloquear pantalla
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -32,14 +32,12 @@ import kotlinx.coroutines.launch
 )
 abstract class AppDatabase : RoomDatabase() {
 
-    // Declaro todos los Daos
     abstract fun productoDao(): ProductoDao
     abstract fun perfilDao(): PerfilDao
     abstract fun proveedorDao(): ProveedorDao
     abstract fun albaranDao(): AlbaranDao
     abstract fun historialDao(): HistorialDao
 
-    // SINGLETON
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -61,21 +59,21 @@ abstract class AppDatabase : RoomDatabase() {
         private class DatabaseCallback : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
-                // Corrutinas para no bloquear el hilo principal de la app
                 INSTANCE?.let { database ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        val dao = database.perfilDao()
+                        // 1. Insertar Perfiles Iniciales
+                        val perfilDao = database.perfilDao()
+                        perfilDao.insert(PerfilEntity(nombre = "Admin Jefe", foto = "", rol = "ADMINISTRADOR", contrasena = "1234", correo = "admin@empresa.com"))
+                        perfilDao.insert(PerfilEntity(nombre = "Ana Gómez", foto = "", rol = "USUARIO", contrasena = null, correo = null))
+                        perfilDao.insert(PerfilEntity(nombre = "Luis Temporal", foto = "", rol = "USUARIO", contrasena = null, correo = null, habilitado = false))
 
-                        dao.insert(
-                            PerfilEntity(nombre = "Admin Jefe", foto = "", rol = "ADMINISTRADOR", contrasena = "1234", correo = "admin@empresa.com", habilitado = true)
-                        )
-                        dao.insert(
-                            PerfilEntity(nombre = "Ana Gómez", foto = "", rol = "USUARIO", contrasena = null, correo = null, habilitado = true)
-                        )
-                        // Este insert lo pongo en inactivo para comprobar que no sale en pantalla
-                        dao.insert(
-                            PerfilEntity(nombre = "Luis Temporal", foto = "", rol = "USUARIO", contrasena = null, correo = null, habilitado = false)
-                        )
+                        // 2. Insertar Productos Iniciales (Bebidas)
+                        val productoDao = database.productoDao()
+                        productoDao.insert(ProductoEntity(nombre = "Coca-Cola 33cl", foto = "", cantidad = 24, cantidadMinima = 10))
+                        productoDao.insert(ProductoEntity(nombre = "Fanta Naranja 33cl", foto = "", cantidad = 18, cantidadMinima = 8))
+                        productoDao.insert(ProductoEntity(nombre = "Agua Mineral 50cl", foto = "", cantidad = 5, cantidadMinima = 12)) // Aviso stock bajo
+                        productoDao.insert(ProductoEntity(nombre = "Zumo de Piña", foto = "", cantidad = 10, cantidadMinima = 2))
+                        productoDao.insert(ProductoEntity(nombre = "Cerveza Estela", foto = "", cantidad = 48, cantidadMinima = 15))
                     }
                 }
             }

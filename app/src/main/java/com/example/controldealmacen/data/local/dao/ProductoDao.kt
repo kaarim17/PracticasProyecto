@@ -19,4 +19,10 @@ interface ProductoDao {
 
     @Query("SELECT * FROM productos WHERE id = :id")
     suspend fun getProductoById(id: Int): ProductoEntity?
+
+    @Query("SELECT * FROM productos WHERE id IN (:ids) AND habilitado = 1")
+    suspend fun getProductosByIds(ids: List<Int>): List<ProductoEntity>
+
+    @Query("SELECT * FROM productos WHERE nombre LIKE :query AND habilitado = 1")
+    suspend fun searchProductos(query: String): List<ProductoEntity>
 }
