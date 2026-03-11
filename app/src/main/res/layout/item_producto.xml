@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/img_producto"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <TextView
+            android:id="@+id/tv_nombre_producto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Nombre Producto"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/tv_stock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cantidad: 0"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_aviso_minimo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Stock bajo!"
+            android:textColor="#FF0000"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_restar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@android:drawable/btn_default"
+                android:src="@android:drawable/ic_input_delete"
+                app:tint="#F44336" />
+
+            <View
+                android:layout_width="24dp"
+                android:layout_height="0dp" />
+
+            <ImageButton
+                android:id="@+id/btn_sumar"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@android:drawable/btn_default"
+                android:src="@android:drawable/ic_input_add"
+                app:tint="#4CAF50" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

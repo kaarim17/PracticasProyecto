@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <EditText
+        android:id="@+id/et_nombre_nuevo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del producto"
+        android:inputType="textCapSentences" />
+
+    <EditText
+        android:id="@+id/et_stock_nuevo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Stock inicial"
+        android:inputType="number"
+        android:layout_marginTop="8dp" />
+
+    <EditText
+        android:id="@+id/et_minimo_nuevo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Mínimo aviso (opcional)"
+        android:inputType="number"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>
