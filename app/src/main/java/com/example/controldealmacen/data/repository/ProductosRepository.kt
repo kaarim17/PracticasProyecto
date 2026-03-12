@@ -11,4 +11,5 @@ class ProductosRepository (private val productoDao: ProductoDao) {
     suspend fun getProductoById(id: Int): ProductoEntity? = productoDao.getProductoById(id)
     suspend fun getProductosByIds(ids: List<Int>): List<ProductoEntity> = productoDao.getProductosByIds(ids)
     suspend fun searchProductos(query: String): List<ProductoEntity> = productoDao.searchProductos("%$query%")
+    suspend fun getProductoByNombre(nombre: String): ProductoEntity? = productoDao.getProductoByNombre(nombre)
 }

@@ -9,7 +9,7 @@ import com.example.controldealmacen.data.local.entities.ProductoEntity
 @Dao
 interface ProductoDao {
     @Insert
-    suspend fun insert(producto: ProductoEntity)
+    suspend fun insert(producto: ProductoEntity): Long
 
     @Update
     suspend fun update(producto: ProductoEntity)
@@ -25,4 +25,7 @@ interface ProductoDao {
 
     @Query("SELECT * FROM productos WHERE nombre LIKE :query AND habilitado = 1")
     suspend fun searchProductos(query: String): List<ProductoEntity>
+
+    @Query("SELECT * FROM productos WHERE nombre = :nombre LIMIT 1")
+    suspend fun getProductoByNombre(nombre: String): ProductoEntity?
 }

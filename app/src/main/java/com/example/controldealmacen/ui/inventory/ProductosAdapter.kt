@@ -1,5 +1,7 @@
 package com.example.controldealmacen.ui.inventory
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.ProductoEntity
+import java.io.File
 
 class ProductosAdapter(
     private var productos: List<ProductoEntity>,
@@ -43,8 +46,23 @@ class ProductosAdapter(
             holder.tvAvisoMinimo.visibility = View.GONE
         }
 
-        // Imagen por defecto por ahora
-        holder.imgProducto.setImageResource(R.drawable.ic_launcher_foreground)
+        // Cargar imagen desde la ruta guardada o poner una por defecto
+        if (producto.foto.isNotEmpty()) {
+            try {
+                val uri = Uri.parse(producto.foto)
+                val imgFile = File(uri.path ?: "")
+                if (imgFile.exists()) {
+                    val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
+                    holder.imgProducto.setImageBitmap(myBitmap)
+                } else {
+                    holder.imgProducto.setImageResource(R.drawable.ic_launcher_foreground)
+                }
+            } catch (e: Exception) {
+                holder.imgProducto.setImageResource(R.drawable.ic_launcher_foreground)
+            }
+        } else {
+            holder.imgProducto.setImageResource(R.drawable.ic_launcher_foreground)
+        }
 
         holder.btnSumar.setOnClickListener { onAddClick(producto) }
         holder.btnRestar.setOnClickListener { onRemoveClick(producto) }

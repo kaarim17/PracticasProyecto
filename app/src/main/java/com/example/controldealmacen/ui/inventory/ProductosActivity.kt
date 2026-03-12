@@ -28,13 +28,10 @@ class ProductosActivity : AppCompatActivity() {
     // Variables del TIMEOUT
     private val handlerTimeout = Handler(Looper.getMainLooper())
     private val tiempoInactividad = 10 * 60 * 1000L // 10 minutos
-    //private val tiempoInactividad = 10 * 1000L // 10 segundos
 
     private val runnableCerrarSesion = Runnable {
-        // Este código se ejecuta si el tiempo se agota
         Toast.makeText(this, "Sesión cerrada por inactividad", Toast.LENGTH_LONG).show()
         val intent = Intent(this, MainActivity::class.java)
-
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         finish()
@@ -69,7 +66,12 @@ class ProductosActivity : AppCompatActivity() {
         viewModel.productos.observe(this) { productos ->
             adapter.updateData(productos)
         }
-        
+    }
+
+    override fun onResume() {
+        super.onResume()
+        reiniciarTemporizador()
+        // Recargar productos al volver (por si se añadió alguno nuevo)
         viewModel.cargarProductos(idUsuario = idUsuarioActivo)
     }
 
@@ -88,6 +90,7 @@ class ProductosActivity : AppCompatActivity() {
         )
         rvProductos.adapter = adapter
     }
+
     private fun setupSearch() {
         val etBuscar = findViewById<EditText>(R.id.et_buscar)
         etBuscar.addTextChangedListener(object : TextWatcher {
@@ -98,26 +101,26 @@ class ProductosActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
+
     private fun setupFab() {
         val fab = findViewById<FloatingActionButton>(R.id.fab_add_producto)
         fab.setOnClickListener {
-            // Abre la nueva pantalla para añadir producto
             val intent = Intent(this, AddProductoActivity::class.java)
+            intent.putExtra("ID_USUARIO", idUsuarioActivo)
             startActivity(intent)
         }
     }
+
     override fun onUserInteraction() {
         super.onUserInteraction()
         reiniciarTemporizador()
     }
-    override fun onResume() {
-        super.onResume()
-        reiniciarTemporizador()
-    }
+
     override fun onPause() {
         super.onPause()
         handlerTimeout.removeCallbacks(runnableCerrarSesion)
     }
+
     private fun reiniciarTemporizador() {
         handlerTimeout.removeCallbacks(runnableCerrarSesion)
         handlerTimeout.postDelayed(runnableCerrarSesion, tiempoInactividad)
