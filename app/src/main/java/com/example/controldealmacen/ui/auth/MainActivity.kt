@@ -32,10 +32,8 @@ class MainActivity : AppCompatActivity() {
         // 2. Inicializamos el Adapter con la lógica de clics
         adapter = PerfilAdapter(emptyList()) { perfilSeleccionado ->
             if (perfilSeleccionado.rol == "ADMINISTRADOR") {
-                // Si es admin, le pedimos la clave
                 mostrarDialogoContrasena(perfilSeleccionado)
             } else {
-                // Si es usuario normal, entra directo
                 iniciarSesion(perfilSeleccionado)
             }
         }
@@ -45,20 +43,20 @@ class MainActivity : AppCompatActivity() {
         val database = AppDatabase.getDatabase(this)
         val repository = PerfilRepository(database.perfilDao())
 
-        // 4. Instanciamos el ViewModel usando su Factory
+        // 4. Instanciamos el ViewModel
         val factory = LoginViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
-        // 5. Observamos los datos en tiempo real de la base de datos
+        // 5. Observamos los datos (ESTO SE QUEDA SOLO)
         viewModel.perfiles.observe(this) { listaPerfiles ->
             adapter.actualizarDatos(listaPerfiles)
+        } // <-- Cerramos el observe aquí
 
-        // 6. Botón para registrar un nuevo empleado
+        // 6. Botón para registrar (FUERA DEL OBSERVE)
         val btnNuevoEmpleado = findViewById<android.widget.Button>(R.id.btn_nuevo_empleado)
         btnNuevoEmpleado.setOnClickListener {
             val intent = android.content.Intent(this, RegistroActivity::class.java)
             startActivity(intent)
-        }
         }
     }
     private fun mostrarDialogoContrasena(perfil: PerfilEntity) {

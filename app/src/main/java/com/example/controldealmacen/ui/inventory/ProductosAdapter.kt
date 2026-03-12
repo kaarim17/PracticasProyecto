@@ -66,6 +66,14 @@ class ProductosAdapter(
 
         holder.btnSumar.setOnClickListener { onAddClick(producto) }
         holder.btnRestar.setOnClickListener { onRemoveClick(producto) }
+
+        // Al tocar cualquier parte de la tarjeta del producto, abrimos Editar
+        holder.itemView.setOnClickListener {
+            val intent = android.content.Intent(holder.itemView.context, EditarProductoActivity::class.java)
+            // Le pasamos el ID del producto para que sepa cuál tiene que cargar
+            intent.putExtra("ID_PRODUCTO", producto.id)
+            holder.itemView.context.startActivity(intent)
+        }
     }
 
     override fun getItemCount(): Int = productos.size

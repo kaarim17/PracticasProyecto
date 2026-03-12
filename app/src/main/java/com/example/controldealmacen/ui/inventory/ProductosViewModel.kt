@@ -80,6 +80,27 @@ class ProductosViewModel(
             cargarProductos(currentQuery)
         }
     }
+
+    suspend fun getProductoById(id: Int): ProductoEntity? {
+        // Asumiendo que tienes esta función en el repositorio (si no, créala)
+        return productosRepository.getProductoById(id)
+    }
+
+    fun guardarEdicionProducto(producto: ProductoEntity) {
+        viewModelScope.launch {
+            productosRepository.updateProducto(producto)
+            // Refrescamos la lista general por si acaso
+            cargarProductos(currentQuery)
+        }
+    }
+
+    fun borrarProducto(producto: ProductoEntity) {
+        viewModelScope.launch {
+            // Asumiendo que tienes un deleteProducto en el repo
+            productosRepository.deleteProducto(producto)
+            cargarProductos(currentQuery)
+        }
+    }
 }
 
 class ProductosViewModelFactory(

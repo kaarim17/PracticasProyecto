@@ -1,6 +1,7 @@
 package com.example.controldealmacen.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -14,6 +15,8 @@ interface ProductoDao {
     @Update
     suspend fun update(producto: ProductoEntity)
 
+    @Delete
+    suspend fun delete(producto: ProductoEntity)
     @Query("SELECT * FROM productos WHERE habilitado = 1")
     suspend fun getProductosHabilitados(): List<ProductoEntity>
 

@@ -1,19 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.controldealmacen">
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ControlDeAlmacen">
 
-        <!-- 1. Esta es ahora la actividad que arranca la App -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.auth.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,21 +18,11 @@
             </intent-filter>
         </activity>
 
-        <!-- 2. La MainActivity ahora es una actividad secundaria -->
-        <activity
-            android:name=".ui.auth.MainActivity"
-            android:exported="false" />
+        <activity android:name=".ui.inventory.ProductosActivity" />
+        <activity android:name=".ui.inventory.AddProductoActivity" />
+        <activity android:name=".ui.inventory.EditarProductoActivity" />
 
-        <!-- 3. Actividad de Productos -->
-        <activity
-            android:name=".ui.inventory.ProductosActivity"
-            android:exported="false" />
-
-        <!-- 4. Actividad para Añadir Producto -->
-        <activity
-            android:name=".ui.inventory.AddProductoActivity"
-            android:exported="false" />
+        <activity android:name=".ui.auth.RegistroActivity" />
 
     </application>
-
 </manifest>

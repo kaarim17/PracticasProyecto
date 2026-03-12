@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F5F5"
+    android:fillViewport="true"> <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/titulo_editar_producto"
+        android:textAlignment="center"
+        android:textColor="#333"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/iv_editar_foto"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="8dp"
+        android:background="#E0E0E0"
+        android:contentDescription="@string/desc_foto_producto"
+        android:scaleType="centerCrop"
+        android:src="@android:drawable/ic_menu_camera" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/texto_cambiar_foto"
+        android:textAlignment="center"
+        android:textColor="#666666"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/et_editar_nombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_editar_nombre"
+        android:inputType="textCapSentences"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/et_editar_cantidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_editar_cantidad"
+        android:inputType="number"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/et_editar_minimo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_editar_minimo"
+        android:inputType="number"
+        android:minHeight="48dp" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/sw_editar_habilitado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:checked="true"
+        android:text="@string/texto_switch_habilitado"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:minHeight="32dp" /> <Button
+    android:id="@+id/btn_guardar_edicion"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:text="@string/btn_guardar_edicion"
+    android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btn_borrar_producto"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#F44336"
+        android:text="@string/btn_borrar_producto"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
+
+</LinearLayout>
+</ScrollView>

@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Control de Almacen</string>
+    <string name="titulo_editar_producto">Editar Producto</string>
+    <string name="hint_editar_nombre">Nombre del producto</string>
+    <string name="hint_editar_cantidad">Cantidad en stock</string>
+    <string name="hint_editar_minimo">Cantidad mínima (Opcional)</string>
+    <string name="texto_cambiar_foto">Toca la foto para cambiarla</string>
+    <string name="texto_switch_habilitado">Producto Habilitado</string>
+    <string name="btn_guardar_edicion">GUARDAR CAMBIOS</string>
+    <string name="btn_borrar_producto">BORRAR PRODUCTO</string>
+    <string name="desc_foto_producto">Foto del producto a editar</string>
 </resources>
