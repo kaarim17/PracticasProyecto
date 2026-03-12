@@ -23,7 +23,7 @@
 
         <!-- 2. La MainActivity ahora es una actividad secundaria -->
         <activity
-            android:name=".ui.login.MainActivity"
+            android:name=".ui.auth.MainActivity"
             android:exported="false" />
 
         <!-- 3. Actividad de Productos -->

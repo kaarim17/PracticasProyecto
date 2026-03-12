@@ -1,4 +1,4 @@
-package com.example.controldealmacen.ui.login
+package com.example.controldealmacen.ui.auth
 
 import android.content.Intent
 import android.os.Bundle
@@ -27,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         // 1. Preparamos el RecyclerView
         val rvEmpleados = findViewById<RecyclerView>(R.id.rv_empleados)
-        // Ponemos 4 columnas para la cuadrícula
         rvEmpleados.layoutManager = GridLayoutManager(this, 4)
 
         // 2. Inicializamos el Adapter con la lógica de clics
@@ -53,6 +52,13 @@ class MainActivity : AppCompatActivity() {
         // 5. Observamos los datos en tiempo real de la base de datos
         viewModel.perfiles.observe(this) { listaPerfiles ->
             adapter.actualizarDatos(listaPerfiles)
+
+        // 6. Botón para registrar un nuevo empleado
+        val btnNuevoEmpleado = findViewById<android.widget.Button>(R.id.btn_nuevo_empleado)
+        btnNuevoEmpleado.setOnClickListener {
+            val intent = android.content.Intent(this, RegistroActivity::class.java)
+            startActivity(intent)
+        }
         }
     }
     private fun mostrarDialogoContrasena(perfil: PerfilEntity) {

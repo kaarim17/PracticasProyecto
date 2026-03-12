@@ -1,4 +1,4 @@
-package com.example.controldealmacen.ui.login
+package com.example.controldealmacen.ui.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

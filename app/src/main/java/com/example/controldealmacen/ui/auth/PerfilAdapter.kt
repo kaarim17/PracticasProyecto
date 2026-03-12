@@ -1,4 +1,4 @@
-package com.example.controldealmacen.ui.login
+package com.example.controldealmacen.ui.auth
 
 import android.view.LayoutInflater
 import android.view.View

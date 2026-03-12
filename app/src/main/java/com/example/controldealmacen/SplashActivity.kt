@@ -8,7 +8,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.example.controldealmacen.ui.login.MainActivity
+import com.example.controldealmacen.ui.auth.MainActivity
 
 class SplashActivity : AppCompatActivity() {
 
