@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.controldealmacen">
 
@@ -23,6 +24,9 @@
         <activity android:name=".ui.inventory.EditarProductoActivity" />
 
         <activity android:name=".ui.auth.RegistroActivity" />
+
+        <activity android:name=".ui.proveedores.ProveedoresActivity" />
+        <activity android:name=".ui.proveedores.AddProveedorActivity" />
 
     </application>
 </manifest>

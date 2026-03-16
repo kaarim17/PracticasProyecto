@@ -8,25 +8,23 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.FileProvider
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.local.entities.HistorialEntity
 import com.example.controldealmacen.data.local.entities.ProductoEntity
-import com.example.controldealmacen.data.repository.HistorialRepository
-import com.example.controldealmacen.data.repository.ProductosRepository
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.util.*
 
 class AddProductoActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: ProductosViewModel
+    // Modo básico de llamar al ViewModel
+    private val viewModel: ProductosViewModel by viewModels()
+
     private var fotoUri: Uri? = null
     private var idUsuarioActivo: Int = -1
 
@@ -42,16 +40,7 @@ class AddProductoActivity : AppCompatActivity() {
 
         idUsuarioActivo = intent.getIntExtra("ID_USUARIO", -1)
 
-        setupViewModel()
         initViews()
-    }
-
-    private fun setupViewModel() {
-        val database = AppDatabase.getDatabase(this)
-        val productosRepo = ProductosRepository(database.productoDao())
-        val historialRepo = HistorialRepository(database.historialDao())
-        val factory = ProductosViewModelFactory(productosRepo, historialRepo)
-        viewModel = ViewModelProvider(this, factory)[ProductosViewModel::class.java]
     }
 
     private fun initViews() {

@@ -2,26 +2,25 @@ package com.example.controldealmacen.ui.inventory
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import android.widget.Toast
+import androidx.activity.viewModels // <-- IMPORTANTE: Este es el import del modo básico
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
-import com.example.controldealmacen.data.local.AppDatabase
-import com.example.controldealmacen.data.repository.HistorialRepository
-import com.example.controldealmacen.data.repository.ProductosRepository
 import com.example.controldealmacen.ui.auth.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
 
 class ProductosActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: ProductosViewModel
+    // Modo básico y limpio
+    private val viewModel: ProductosViewModel by viewModels()
+
     private lateinit var adapter: ProductosAdapter
     private var idUsuarioActivo: Int = -1
 
@@ -42,36 +41,33 @@ class ProductosActivity : AppCompatActivity() {
         setContentView(R.layout.activity_productos)
 
         idUsuarioActivo = intent.getIntExtra("ID_USUARIO", -1)
-        
+
         if (idUsuarioActivo == -1) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
             return
         }
+
         setupRecyclerView()
-        setupViewModel()
+        setupObservers()
         setupSearch()
         setupFab()
     }
 
-    private fun setupViewModel() {
-        val database = AppDatabase.getDatabase(this)
-        val productosRepo = ProductosRepository(database.productoDao())
-        val historialRepo = HistorialRepository(database.historialDao())
-        val factory = ProductosViewModelFactory(productosRepo, historialRepo)
-        
-        viewModel = ViewModelProvider(this, factory)[ProductosViewModel::class.java]
-        
+    private fun setupObservers() {
+        // Observamos los productos. Cuando cambien en la BD, la lista se actualiza sola
         viewModel.productos.observe(this) { productos ->
-            adapter.updateData(productos)
+            if (::adapter.isInitialized) {
+                adapter.updateData(productos)
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         reiniciarTemporizador()
-        // Recargar productos al volver (por si se añadió alguno nuevo)
+        // Recargar productos al volver
         viewModel.cargarProductos(idUsuario = idUsuarioActivo)
     }
 
@@ -108,6 +104,13 @@ class ProductosActivity : AppCompatActivity() {
             val intent = Intent(this, AddProductoActivity::class.java)
             intent.putExtra("ID_USUARIO", idUsuarioActivo)
             startActivity(intent)
+        }
+
+        // --- EL TRUCO MÁGICO PARA IR A PROVEEDORES ---
+        fab.setOnLongClickListener {
+            val intent = Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java)
+            startActivity(intent)
+            true // Devuelve true para indicar que ya hemos manejado la pulsación larga
         }
     }
 

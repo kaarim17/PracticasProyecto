@@ -9,4 +9,11 @@
     <string name="btn_guardar_edicion">GUARDAR CAMBIOS</string>
     <string name="btn_borrar_producto">BORRAR PRODUCTO</string>
     <string name="desc_foto_producto">Foto del producto a editar</string>
+    <string name="titulo_add_proveedor">Añadir Nuevo Proveedor</string>
+    <string name="hint_cif">CIF (Obligatorio)</string>
+    <string name="hint_nombre_empresa">Nombre de la empresa (Obligatorio)</string>
+    <string name="hint_telefono_opcional">Teléfono (Opcional)</string>
+    <string name="hint_email_opcional">Correo electrónico (Opcional)</string>
+    <string name="btn_guardar_proveedor">GUARDAR PROVEEDOR</string>
+    <string name="titulo_proveedores">Gestión de Proveedores</string>
 </resources>

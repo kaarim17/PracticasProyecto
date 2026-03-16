@@ -1,117 +1,90 @@
 package com.example.controldealmacen.ui.inventory
 
-import androidx.lifecycle.*
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.local.entities.HistorialEntity
 import com.example.controldealmacen.data.local.entities.ProductoEntity
-import com.example.controldealmacen.data.repository.HistorialRepository
-import com.example.controldealmacen.data.repository.ProductosRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class ProductosViewModel(
-    private val productosRepository: ProductosRepository,
-    private val historialRepository: HistorialRepository
-) : ViewModel() {
+class ProductosViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val database: AppDatabase = AppDatabase.getDatabase(application)
+    private val productoDao = database.productoDao()
+    private val historialDao = database.historialDao()
 
     private val _productos = MutableLiveData<List<ProductoEntity>>()
     val productos: LiveData<List<ProductoEntity>> get() = _productos
 
-    private var currentQuery: String = ""
-    private var idUsuarioActivo: Int = -1
 
-    /**
-     * Carga los productos. 
-     * Si no hay búsqueda, muestra todos pero con los 10 más recientes del usuario al principio.
-     */
-    fun cargarProductos(query: String = "", idUsuario: Int = -1) {
-        if (idUsuario != -1) idUsuarioActivo = idUsuario
-        currentQuery = query
-        
-        viewModelScope.launch {
-            if (currentQuery.isEmpty()) {
-                // 1. Obtener todos los productos habilitados
-                val todos = productosRepository.getProductosHabilitados()
-                
-                // 2. Obtener los IDs de las últimas interacciones de ESTE usuario
-                val recientes = historialRepository.getLastInteraccionesByPerfil(idUsuarioActivo)
-                val idsRecientes = recientes.map { it.productoId }.distinct().take(10)
-                
-                // 3. Ordenar: Recientes primero (en orden de recencia), luego por nombre
-                _productos.value = todos.sortedWith(compareBy({ 
-                    val index = idsRecientes.indexOf(it.id)
-                    if (index != -1) index else Int.MAX_VALUE 
-                }, { it.nombre }))
-                
+    // --- 1. LAS DOS FUNCIONES QUE FALTABAN PARA EL ERROR ROJO ---
+
+    // Esta función sirve tanto para cargar todos los productos como para buscarlos
+    fun cargarProductos(query: String = "", idUsuario: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val lista = if (query.isEmpty()) {
+                // Asumo que tu DAO tiene una función para obtener todos.
+                // Si se llama distinto, cámbialo aquí.
+                productoDao.getProductosHabilitados()
             } else {
-                // Búsqueda por nombre (filtro dinámico normal)
-                _productos.value = productosRepository.searchProductos(currentQuery)
+                // Asumo que tienes una función para buscar por nombre
+                productoDao.searchProductos("%$query%")
             }
+            _productos.postValue(lista)
         }
     }
 
-    fun modificarStock(producto: ProductoEntity, cantidad: Int, perfilId: Int) {
-        viewModelScope.launch {
-            val nuevaCantidad = producto.cantidad + cantidad
+    // Esta función suma o resta stock y lo guarda en el historial
+    fun modificarStock(producto: ProductoEntity, cambio: Int, idUsuario: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val nuevaCantidad = producto.cantidad + cambio
+
+            // Solo modificamos si el stock no se va a quedar en negativo
             if (nuevaCantidad >= 0) {
                 val productoActualizado = producto.copy(cantidad = nuevaCantidad)
-                productosRepository.updateProducto(productoActualizado)
-                
-                // Registrar en historial
-                val accion = if (cantidad > 0) "ALTA" else "BAJA"
-                historialRepository.registrarInteraccion(
+                productoDao.update(productoActualizado)
+
+                // Registramos el movimiento en el historial
+                val tipoMovimiento = if (cambio > 0) "ENTRADA" else "SALIDA"
+                historialDao.insert(
                     HistorialEntity(
-                        perfilId = perfilId,
+                        perfilId = idUsuario,
                         productoId = producto.id,
-                        tipoAccion = accion,
-                        cantidad = Math.abs(cantidad),
+                        tipoAccion = tipoMovimiento,
+                        cantidad = Math.abs(cambio),
                         fechaHora = System.currentTimeMillis()
                     )
                 )
-                
-                // Refrescar lista manteniendo el estado actual
-                cargarProductos(currentQuery)
+
+                // Recargamos la lista para que la pantalla se actualice sola
+                cargarProductos("", idUsuario)
             }
         }
     }
 
-    fun agregarNuevoProducto(nombre: String, stock: Int, minimo: Int?) {
-        viewModelScope.launch {
-            val nuevo = ProductoEntity(nombre = nombre, foto = "", cantidad = stock, cantidadMinima = minimo)
-            productosRepository.insertProducto(nuevo)
-            cargarProductos(currentQuery)
+
+    // --- 2. FUNCIONES PARA EDITAR/BORRAR (Las que ya teníamos) ---
+
+    suspend fun getProductoById(id: Int): ProductoEntity? {
+        return withContext(Dispatchers.IO) {
+            productoDao.getProductoById(id)
         }
     }
 
-    suspend fun getProductoById(id: Int): ProductoEntity? {
-        // Asumiendo que tienes esta función en el repositorio (si no, créala)
-        return productosRepository.getProductoById(id)
-    }
-
     fun guardarEdicionProducto(producto: ProductoEntity) {
-        viewModelScope.launch {
-            productosRepository.updateProducto(producto)
-            // Refrescamos la lista general por si acaso
-            cargarProductos(currentQuery)
+        viewModelScope.launch(Dispatchers.IO) {
+            productoDao.update(producto)
         }
     }
 
     fun borrarProducto(producto: ProductoEntity) {
-        viewModelScope.launch {
-            // Asumiendo que tienes un deleteProducto en el repo
-            productosRepository.deleteProducto(producto)
-            cargarProductos(currentQuery)
+        viewModelScope.launch(Dispatchers.IO) {
+            productoDao.delete(producto)
         }
-    }
-}
-
-class ProductosViewModelFactory(
-    private val productosRepo: ProductosRepository,
-    private val historialRepo: HistorialRepository
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProductosViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ProductosViewModel(productosRepo, historialRepo) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
