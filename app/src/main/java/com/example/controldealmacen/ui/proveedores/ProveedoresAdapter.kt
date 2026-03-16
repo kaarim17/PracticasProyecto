@@ -31,7 +31,6 @@ class ProveedoresAdapter(
         holder.tvNombre.text = proveedor.nombre
         holder.tvCif.text = "CIF: ${proveedor.cif}"
 
-        // Montamos el texto de contacto dependiendo de si hay teléfono o email
         val tel = proveedor.telefono ?: "Sin telf"
         val email = proveedor.email ?: "Sin email"
         holder.tvContacto.text = "Tel: $tel | $email"

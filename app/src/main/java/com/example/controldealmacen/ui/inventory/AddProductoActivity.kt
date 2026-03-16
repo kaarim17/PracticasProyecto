@@ -22,7 +22,6 @@ import java.io.FileOutputStream
 
 class AddProductoActivity : AppCompatActivity() {
 
-    // Modo básico de llamar al ViewModel
     private val viewModel: ProductosViewModel by viewModels()
 
     private var fotoUri: Uri? = null

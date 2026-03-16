@@ -18,7 +18,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ProductosActivity : AppCompatActivity() {
 
-    // Modo básico y limpio
     private val viewModel: ProductosViewModel by viewModels()
 
     private lateinit var adapter: ProductosAdapter
@@ -56,7 +55,6 @@ class ProductosActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        // Observamos los productos. Cuando cambien en la BD, la lista se actualiza sola
         viewModel.productos.observe(this) { productos ->
             if (::adapter.isInitialized) {
                 adapter.updateData(productos)
@@ -67,7 +65,6 @@ class ProductosActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         reiniciarTemporizador()
-        // Recargar productos al volver
         viewModel.cargarProductos(idUsuario = idUsuarioActivo)
     }
 
@@ -100,17 +97,37 @@ class ProductosActivity : AppCompatActivity() {
 
     private fun setupFab() {
         val fab = findViewById<FloatingActionButton>(R.id.fab_add_producto)
+
+        // El clic normal Añande Producto
         fab.setOnClickListener {
             val intent = Intent(this, AddProductoActivity::class.java)
             intent.putExtra("ID_USUARIO", idUsuarioActivo)
             startActivity(intent)
         }
 
-        // --- EL TRUCO MÁGICO PARA IR A PROVEEDORES ---
+        // Al mantener pulsado, sale una ventana para elegir a dónde ir
         fab.setOnLongClickListener {
-            val intent = Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java)
-            startActivity(intent)
-            true // Devuelve true para indicar que ya hemos manejado la pulsación larga
+            val opciones = arrayOf("Gestión de Proveedores", " Gestión de Albaranes")
+
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Menú Avanzado")
+                .setItems(opciones) { _, opcionElegida ->
+                    when (opcionElegida) {
+                        0 -> {
+                            // Opción 0: Proveedores
+                            val intent = Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java)
+                            startActivity(intent)
+                        }
+                        1 -> {
+                            // Opción 1: Albaranes
+                            val intent = Intent(this, com.example.controldealmacen.ui.albaranes.AlbaranesActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                }
+                .show()
+
+            true
         }
     }
 

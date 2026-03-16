@@ -15,7 +15,7 @@ class AddProveedorActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_proveedor) // Asegúrate de tener este layout
+        setContentView(R.layout.activity_add_proveedor)
 
         findViewById<Button>(R.id.btn_guardar_proveedor).setOnClickListener {
             guardarProveedor()

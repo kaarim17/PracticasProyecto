@@ -28,5 +28,8 @@
         <activity android:name=".ui.proveedores.ProveedoresActivity" />
         <activity android:name=".ui.proveedores.AddProveedorActivity" />
 
+        <activity android:name=".ui.albaranes.AddAlbaranActivity" />
+        <activity android:name=".ui.albaranes.AlbaranesActivity" />
+
     </application>
 </manifest>
