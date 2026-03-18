@@ -8,7 +8,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.viewModels // <-- IMPORTANTE: Este es el import del modo básico
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,13 +19,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 class ProductosActivity : AppCompatActivity() {
 
     private val viewModel: ProductosViewModel by viewModels()
-
     private lateinit var adapter: ProductosAdapter
     private var idUsuarioActivo: Int = -1
 
-    // Variables del TIMEOUT
     private val handlerTimeout = Handler(Looper.getMainLooper())
-    private val tiempoInactividad = 10 * 60 * 1000L // 10 minutos
+    private val tiempoInactividad = 10 * 60 * 1000L
 
     private val runnableCerrarSesion = Runnable {
         Toast.makeText(this, "Sesión cerrada por inactividad", Toast.LENGTH_LONG).show()
@@ -98,35 +96,25 @@ class ProductosActivity : AppCompatActivity() {
     private fun setupFab() {
         val fab = findViewById<FloatingActionButton>(R.id.fab_add_producto)
 
-        // El clic normal Añande Producto
         fab.setOnClickListener {
             val intent = Intent(this, AddProductoActivity::class.java)
             intent.putExtra("ID_USUARIO", idUsuarioActivo)
             startActivity(intent)
         }
 
-        // Al mantener pulsado, sale una ventana para elegir a dónde ir
         fab.setOnLongClickListener {
-            val opciones = arrayOf("Gestión de Proveedores", " Gestión de Albaranes")
+            val opciones = arrayOf("Ver Inventario (Excel)", "Gestión de Proveedores", "Gestión de Albaranes")
 
             androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Menú Avanzado")
                 .setItems(opciones) { _, opcionElegida ->
                     when (opcionElegida) {
-                        0 -> {
-                            // Opción 0: Proveedores
-                            val intent = Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java)
-                            startActivity(intent)
-                        }
-                        1 -> {
-                            // Opción 1: Albaranes
-                            val intent = Intent(this, com.example.controldealmacen.ui.albaranes.AlbaranesActivity::class.java)
-                            startActivity(intent)
-                        }
+                        0 -> startActivity(Intent(this, InventarioActivity::class.java))
+                        1 -> startActivity(Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java))
+                        2 -> startActivity(Intent(this, com.example.controldealmacen.ui.albaranes.AlbaranesActivity::class.java))
                     }
                 }
                 .show()
-
             true
         }
     }

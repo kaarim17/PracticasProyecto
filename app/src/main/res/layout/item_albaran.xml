@@ -14,6 +14,13 @@
         android:padding="16dp"
         android:gravity="center_vertical">
 
+        <CheckBox
+            android:id="@+id/cb_seleccion_albaran"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone" />
+
         <ImageView
             android:layout_width="48dp"
             android:layout_height="48dp"

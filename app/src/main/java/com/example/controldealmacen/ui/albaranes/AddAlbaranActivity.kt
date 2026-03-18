@@ -123,13 +123,15 @@ class AddAlbaranActivity : AppCompatActivity() {
             return
         }
 
-        val fechaDePago = if (pagado) System.currentTimeMillis() else null
+        val ahora = System.currentTimeMillis()
+        val fechaDePago = if (pagado) ahora else null
 
         val nuevoAlbaran = AlbaranEntity(
             proveedorId = proveedorSeleccionado!!.id,
             foto = fotoUri.toString(),
             importe = importe,
             pagado = pagado,
+            fecha = ahora, // Guardamos la fecha actual
             fechaPago = fechaDePago
         )
 

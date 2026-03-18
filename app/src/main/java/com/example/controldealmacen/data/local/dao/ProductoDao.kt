@@ -17,8 +17,18 @@ interface ProductoDao {
 
     @Delete
     suspend fun delete(producto: ProductoEntity)
+
+    @Query("SELECT * FROM productos")
+    suspend fun getAllProductos(): List<ProductoEntity>
+
     @Query("SELECT * FROM productos WHERE habilitado = 1")
     suspend fun getProductosHabilitados(): List<ProductoEntity>
+
+    @Query("SELECT * FROM productos WHERE habilitado = 0")
+    suspend fun getProductosDeshabilitados(): List<ProductoEntity>
+
+    @Query("SELECT * FROM productos WHERE cantidad <= cantidadMinima AND habilitado = 1")
+    suspend fun getProductosStockBajo(): List<ProductoEntity>
 
     @Query("SELECT * FROM productos WHERE id = :id")
     suspend fun getProductoById(id: Int): ProductoEntity?

@@ -11,7 +11,7 @@
         android:theme="@style/Theme.ControlDeAlmacen">
 
         <activity
-            android:name=".ui.auth.MainActivity"
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,9 +19,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.auth.MainActivity"
+            android:exported="false" />
+
         <activity android:name=".ui.inventory.ProductosActivity" />
         <activity android:name=".ui.inventory.AddProductoActivity" />
         <activity android:name=".ui.inventory.EditarProductoActivity" />
+        <activity android:name=".ui.inventory.InventarioActivity" />
 
         <activity android:name=".ui.auth.RegistroActivity" />
 
@@ -30,6 +35,7 @@
 
         <activity android:name=".ui.albaranes.AddAlbaranActivity" />
         <activity android:name=".ui.albaranes.AlbaranesActivity" />
+        <activity android:name=".ui.albaranes.ResumenInformeActivity" />
 
     </application>
 </manifest>

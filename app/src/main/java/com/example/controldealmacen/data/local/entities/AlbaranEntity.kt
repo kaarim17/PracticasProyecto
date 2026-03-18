@@ -12,7 +12,7 @@ import androidx.room.PrimaryKey
             entity = ProveedorEntity::class,
             parentColumns = ["id"],
             childColumns = ["proveedorId"],
-            onDelete = ForeignKey.Companion.RESTRICT // RESTRICT por seguridad
+            onDelete = ForeignKey.Companion.RESTRICT
         )
     ],
     indices = [Index("proveedorId")]
@@ -24,5 +24,6 @@ data class AlbaranEntity(
     val foto: String,
     val importe: Double,
     val pagado: Boolean = false,
-    val fechaPago: Long?
+    val fecha: Long, // Fecha de creación del albarán
+    val fechaPago: Long? // Fecha en la que se marcó como pagado
 )

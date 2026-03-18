@@ -3,8 +3,10 @@ package com.example.controldealmacen.ui.albaranes
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +20,7 @@ class AlbaranesActivity : AppCompatActivity() {
 
     private val viewModel: AlbaranesViewModel by viewModels()
     private lateinit var adapter: AlbaranesAdapter
+    private var isSelectionMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +34,45 @@ class AlbaranesActivity : AppCompatActivity() {
             val intent = Intent(this, AddAlbaranActivity::class.java)
             startActivity(intent)
         }
+
+        findViewById<Button>(R.id.btn_modo_informe).setOnClickListener {
+            toggleSelectionMode()
+        }
+
+        findViewById<FloatingActionButton>(R.id.fab_confirmar_informe).setOnClickListener {
+            val selectedIds = adapter.getSelectedIds()
+            if (selectedIds.isNotEmpty()) {
+                val intent = Intent(this, ResumenInformeActivity::class.java)
+                intent.putIntegerArrayListExtra("SELECTED_IDS", ArrayList(selectedIds))
+                startActivity(intent)
+                toggleSelectionMode() // Salir del modo selección tras generar
+            } else {
+                Toast.makeText(this, "Selecciona al menos un albarán", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun toggleSelectionMode() {
+        isSelectionMode = !isSelectionMode
+        adapter.setSelectionMode(isSelectionMode)
+        
+        val fabAdd = findViewById<FloatingActionButton>(R.id.fab_add_albaran)
+        val fabConfirm = findViewById<FloatingActionButton>(R.id.fab_confirmar_informe)
+        val btnInforme = findViewById<Button>(R.id.btn_modo_informe)
+
+        if (isSelectionMode) {
+            fabAdd.visibility = View.GONE
+            fabConfirm.visibility = View.VISIBLE
+            btnInforme.text = "CANCELAR SELECCIÓN"
+        } else {
+            fabAdd.visibility = View.VISIBLE
+            fabConfirm.visibility = View.GONE
+            btnInforme.text = "GENERAR INFORME"
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        // Por defecto, según el PDF, cargamos los de este mes al entrar
         viewModel.cargarAlbaranes("MES")
     }
 
@@ -44,7 +81,6 @@ class AlbaranesActivity : AppCompatActivity() {
         rvAlbaranes.layoutManager = LinearLayoutManager(this)
 
         adapter = AlbaranesAdapter(emptyList()) { albaranTocado ->
-            // Al hacer clic, cumplimos el requisito del PDF: Mostrar foto en grande
             mostrarFotoEnGrande(albaranTocado)
         }
         rvAlbaranes.adapter = adapter

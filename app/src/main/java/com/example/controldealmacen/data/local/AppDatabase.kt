@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
         ProveedorEntity::class,
         HistorialEntity::class
     ],
-    version = 1,
+    version = 2, // Subimos la versión porque hemos cambiado la entidad AlbaranEntity
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -49,6 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "almacen_database"
                 )
+                    .fallbackToDestructiveMigration() // Esto borrará los datos viejos y creará los nuevos con los ejemplos
                     .addCallback(DatabaseCallback())
                     .build()
                 INSTANCE = instance
@@ -65,15 +66,26 @@ abstract class AppDatabase : RoomDatabase() {
                         val perfilDao = database.perfilDao()
                         perfilDao.insert(PerfilEntity(nombre = "Admin Jefe", foto = "", rol = "ADMINISTRADOR", contrasena = "1234", correo = "admin@empresa.com"))
                         perfilDao.insert(PerfilEntity(nombre = "Ana Gómez", foto = "", rol = "USUARIO", contrasena = null, correo = null))
-                        perfilDao.insert(PerfilEntity(nombre = "Luis Temporal", foto = "", rol = "USUARIO", contrasena = null, correo = null, habilitado = false))
 
-                        // 2. Insertar Productos Iniciales (Bebidas)
+                        // 2. Insertar Productos Iniciales
                         val productoDao = database.productoDao()
                         productoDao.insert(ProductoEntity(nombre = "Coca-Cola 33cl", foto = "", cantidad = 24, cantidadMinima = 10))
-                        productoDao.insert(ProductoEntity(nombre = "Fanta Naranja 33cl", foto = "", cantidad = 18, cantidadMinima = 8))
-                        productoDao.insert(ProductoEntity(nombre = "Agua Mineral 50cl", foto = "", cantidad = 5, cantidadMinima = 12)) // Aviso stock bajo
-                        productoDao.insert(ProductoEntity(nombre = "Zumo de Piña", foto = "", cantidad = 10, cantidadMinima = 2))
-                        productoDao.insert(ProductoEntity(nombre = "Cerveza Estela", foto = "", cantidad = 48, cantidadMinima = 15))
+                        productoDao.insert(ProductoEntity(nombre = "Agua Mineral 50cl", foto = "", cantidad = 5, cantidadMinima = 12))
+
+                        // 3. Insertar Proveedores de ejemplo
+                        val proveedorDao = database.proveedorDao()
+                        proveedorDao.insert(ProveedorEntity(id = 1, cif = "B12345678", nombre = "Bebidas del Norte S.L.", telefono = "944001122", email = "ventas@bebidasnorte.com"))
+                        proveedorDao.insert(ProveedorEntity(id = 2, cif = "A87654321", nombre = "Suministros Globales", telefono = "911223344", email = "contacto@suministros.es"))
+
+                        // 4. Insertar Albaranes de ejemplo
+                        val albaranDao = database.albaranDao()
+                        val ahora = System.currentTimeMillis()
+                        val unaSemana = 7L * 24 * 60 * 60 * 1000
+
+                        albaranDao.insert(AlbaranEntity(proveedorId = 1, foto = "", importe = 450.50, pagado = true, fecha = ahora, fechaPago = ahora))
+                        albaranDao.insert(AlbaranEntity(proveedorId = 1, foto = "", importe = 120.00, pagado = false, fecha = ahora, fechaPago = null))
+                        albaranDao.insert(AlbaranEntity(proveedorId = 2, foto = "", importe = 890.99, pagado = true, fecha = ahora - (unaSemana / 2), fechaPago = ahora - (unaSemana / 2)))
+                        albaranDao.insert(AlbaranEntity(proveedorId = 2, foto = "", importe = 300.25, pagado = false, fecha = ahora - (unaSemana / 2), fechaPago = null))
                     }
                 }
             }
