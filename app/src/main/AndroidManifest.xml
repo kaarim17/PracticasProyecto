@@ -29,6 +29,7 @@
         <activity android:name=".ui.inventory.InventarioActivity" />
 
         <activity android:name=".ui.auth.RegistroActivity" />
+        <activity android:name=".ui.auth.GestionPerfilesActivity" />
 
         <activity android:name=".ui.proveedores.ProveedoresActivity" />
         <activity android:name=".ui.proveedores.AddProveedorActivity" />
