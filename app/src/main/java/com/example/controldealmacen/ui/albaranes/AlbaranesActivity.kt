@@ -1,5 +1,6 @@
 package com.example.controldealmacen.ui.albaranes
 
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.AlbaranEntity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Calendar
 
 class AlbaranesActivity : AppCompatActivity() {
 
@@ -102,17 +104,54 @@ class AlbaranesActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btn_filtro_semana).setOnClickListener {
             viewModel.cargarAlbaranes("SEMANA")
         }
+        
+        // Añadimos clic largo en "Todos" o un botón específico para rango
+        findViewById<Button>(R.id.btn_filtro_todos).setOnLongClickListener {
+            mostrarSelectorRango()
+            true
+        }
+    }
+
+    private fun mostrarSelectorRango() {
+        val cal = Calendar.getInstance()
+        
+        // Seleccionar Fecha Inicio
+        DatePickerDialog(this, { _, year, month, day ->
+            val inicio = Calendar.getInstance()
+            inicio.set(year, month, day, 0, 0, 0)
+            
+            // Seleccionar Fecha Fin
+            DatePickerDialog(this, { _, yearF, monthF, dayF ->
+                val fin = Calendar.getInstance()
+                fin.set(yearF, monthF, dayF, 23, 59, 59)
+                
+                viewModel.cargarAlbaranes("RANGO", inicio.timeInMillis, fin.timeInMillis)
+                Toast.makeText(this, "Filtrando rango seleccionado", Toast.LENGTH_SHORT).show()
+                
+            }, year, month, day).apply {
+                setTitle("Fecha Fin")
+                show()
+            }
+            
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).apply {
+            setTitle("Fecha Inicio")
+            show()
+        }
     }
 
     private fun mostrarFotoEnGrande(albaran: AlbaranEntity) {
         val imageView = ImageView(this)
-        imageView.setImageURI(Uri.parse(albaran.foto))
-        imageView.setPadding(16, 16, 16, 16)
+        try {
+            imageView.setImageURI(Uri.parse(albaran.foto))
+            imageView.setPadding(16, 16, 16, 16)
 
-        AlertDialog.Builder(this)
-            .setTitle("Albarán de ${albaran.importe}€")
-            .setView(imageView)
-            .setPositiveButton("Cerrar", null)
-            .show()
+            AlertDialog.Builder(this)
+                .setTitle("Albarán de ${albaran.importe}€")
+                .setView(imageView)
+                .setPositiveButton("Cerrar", null)
+                .show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "No se puede cargar la imagen", Toast.LENGTH_SHORT).show()
+        }
     }
 }

@@ -10,6 +10,7 @@ import com.example.controldealmacen.data.local.entities.AlbaranEntity
 import com.example.controldealmacen.data.repository.AlbaranRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 class AlbaranesViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -21,18 +22,38 @@ class AlbaranesViewModel(application: Application) : AndroidViewModel(applicatio
         val albaranDao = AppDatabase.getDatabase(application).albaranDao()
         repository = AlbaranRepository(albaranDao)
     }
-    fun cargarAlbaranes(filtro: String = "TODOS") {
+
+    fun cargarAlbaranes(filtro: String = "TODOS", fechaInicio: Long? = null, fechaFin: Long? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             val todosLosAlbaranes = repository.getAlbaranes()
             val ahora = System.currentTimeMillis()
 
-            // 1 semana = 7 días * 24h * 60m * 60s * 1000ms
-            val unMesEnMs = 30L * 24 * 60 * 60 * 1000
-            val unaSemanaEnMs = 7L * 24 * 60 * 60 * 1000
-
             val listaFiltrada = when (filtro) {
-                "MES" -> todosLosAlbaranes.filter { it.fechaPago != null && (ahora - it.fechaPago < unMesEnMs) }
-                "SEMANA" -> todosLosAlbaranes.filter { it.fechaPago != null && (ahora - it.fechaPago < unaSemanaEnMs) }
+                "MES" -> {
+                    val cal = Calendar.getInstance()
+                    cal.set(Calendar.DAY_OF_MONTH, 1)
+                    cal.set(Calendar.HOUR_OF_DAY, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    val inicioMes = cal.timeInMillis
+                    todosLosAlbaranes.filter { it.fecha >= inicioMes }
+                }
+                "SEMANA" -> {
+                    val cal = Calendar.getInstance()
+                    cal.set(Calendar.DAY_OF_WEEK, cal.firstDayOfWeek)
+                    cal.set(Calendar.HOUR_OF_DAY, 0)
+                    cal.set(Calendar.MINUTE, 0)
+                    cal.set(Calendar.SECOND, 0)
+                    val inicioSemana = cal.timeInMillis
+                    todosLosAlbaranes.filter { it.fecha >= inicioSemana }
+                }
+                "RANGO" -> {
+                    if (fechaInicio != null && fechaFin != null) {
+                        todosLosAlbaranes.filter { it.fecha in fechaInicio..fechaFin }
+                    } else {
+                        todosLosAlbaranes
+                    }
+                }
                 else -> todosLosAlbaranes // "TODOS"
             }
 
