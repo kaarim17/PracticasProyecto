@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Gestión de Almacén (Libre)">
+        <menu>
+            <item
+                android:id="@+id/nav_inventario"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="Consultar Inventario (Excel)" />
+        </menu>
+    </item>
+
+    <item android:id="@+id/group_admin" android:title="Administración (Privado)">
+        <menu>
+            <item
+                android:id="@+id/nav_perfiles"
+                android:icon="@android:drawable/ic_menu_myplaces"
+                android:title="Gestión de Perfiles" />
+            <item
+                android:id="@+id/nav_proveedores"
+                android:icon="@android:drawable/ic_menu_agenda"
+                android:title="Gestión de Proveedores" />
+            <item
+                android:id="@+id/nav_albaranes"
+                android:icon="@android:drawable/ic_menu_save"
+                android:title="Albaranes e Informes" />
+        </menu>
+    </item>
+
+    <item android:title="Sesión">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
+                android:title="Cerrar Sesión / Reposo" />
+        </menu>
+    </item>
+</menu>
