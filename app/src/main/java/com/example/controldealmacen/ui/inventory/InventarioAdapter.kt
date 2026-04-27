@@ -41,13 +41,13 @@ class InventarioAdapter(
             holder.tvEstado.setTextColor(Color.parseColor("#F44336"))
         }
 
-        // Resaltar en rojo si el stock es bajo
+        // REQUISITO SPRINT 5: Alerta visual para productos en nivel crítico (Excel)
         if (producto.cantidadMinima != null && producto.cantidad <= producto.cantidadMinima) {
-            holder.tvCantidad.setTextColor(Color.RED)
-            holder.itemView.setBackgroundColor(Color.parseColor("#FFF0F0"))
+            holder.tvCantidad.setTextColor(Color.WHITE)
+            holder.tvCantidad.setBackgroundColor(Color.parseColor("#D32F2F")) // Rojo intenso
         } else {
-            holder.tvCantidad.setTextColor(Color.BLACK)
-            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
+            holder.tvCantidad.setTextColor(Color.parseColor("#333333"))
+            holder.tvCantidad.setBackgroundResource(R.drawable.bg_table_cell)
         }
     }
 

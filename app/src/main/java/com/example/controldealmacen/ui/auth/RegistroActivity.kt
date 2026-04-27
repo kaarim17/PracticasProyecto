@@ -6,16 +6,16 @@ import android.widget.EditText
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.local.entities.PerfilEntity
+import com.example.controldealmacen.ui.BaseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class RegistroActivity : AppCompatActivity() {
+class RegistroActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

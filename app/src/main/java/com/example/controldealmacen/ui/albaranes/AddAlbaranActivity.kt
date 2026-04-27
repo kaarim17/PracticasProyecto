@@ -10,16 +10,16 @@ import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.AlbaranEntity
 import com.example.controldealmacen.data.local.entities.ProveedorEntity
+import com.example.controldealmacen.ui.BaseActivity
 import com.example.controldealmacen.ui.proveedores.ProveedorViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 import java.io.File
 import java.io.FileOutputStream
 
-class AddAlbaranActivity : AppCompatActivity() {
+class AddAlbaranActivity : BaseActivity() {
     private val albaranesViewModel: AlbaranesViewModel by viewModels()
     private val proveedorViewModel: ProveedorViewModel by viewModels()
 

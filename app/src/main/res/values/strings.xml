@@ -15,10 +15,12 @@
     <string name="hint_telefono_opcional">Teléfono (Opcional)</string>
     <string name="hint_email_opcional">Correo electrónico (Opcional)</string>
     <string name="btn_guardar_proveedor">GUARDAR PROVEEDOR</string>
-    <string name="titulo_proveedores">Gestión de Proveedores</string><string name="titulo_add_albaran">Nuevo Albarán</string>
+    <string name="titulo_proveedores">Gestión de Proveedores</string>
+    <string name="titulo_add_albaran">Nuevo Albarán</string>
     <string name="hint_importe">Importe total (€)</string>
     <string name="txt_pagado">¿Albarán pagado?</string>
     <string name="btn_tomar_foto_albaran">FOTOGRAFIAR ALBARÁN</string>
     <string name="btn_guardar_albaran">GUARDAR ALBARÁN</string>
-
+    <string name="navigation_drawer_open">Abrir menú</string>
+    <string name="navigation_drawer_close">Cerrar menú</string>
 </resources>

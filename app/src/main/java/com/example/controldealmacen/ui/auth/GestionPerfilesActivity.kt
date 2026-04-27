@@ -7,12 +7,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.PerfilEntity
+import com.example.controldealmacen.ui.BaseActivity
 
-class GestionPerfilesActivity : AppCompatActivity() {
+class GestionPerfilesActivity : BaseActivity() {
 
     private val viewModel: GestionPerfilesViewModel by viewModels()
     private lateinit var adapter: GestionPerfilesAdapter
@@ -24,7 +24,6 @@ class GestionPerfilesActivity : AppCompatActivity() {
         val rvPerfiles = findViewById<RecyclerView>(R.id.rv_gestion_perfiles)
         val etBuscar = findViewById<EditText>(R.id.et_buscar_perfil)
 
-        // Inicializamos el Adapter pasándole las funciones de actualizar y borrar
         adapter = GestionPerfilesAdapter(
             onPerfilUpdated = { perfilActualizado ->
                 viewModel.actualizarPerfil(perfilActualizado)
@@ -35,12 +34,10 @@ class GestionPerfilesActivity : AppCompatActivity() {
         )
         rvPerfiles.adapter = adapter
 
-        // Observamos los cambios en la base de datos para actualizar la lista en tiempo real
         viewModel.perfiles.observe(this) { lista ->
             adapter.setPerfiles(lista)
         }
 
-        // Buscador en tiempo real
         etBuscar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

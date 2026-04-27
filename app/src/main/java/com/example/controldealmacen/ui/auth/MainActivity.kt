@@ -14,6 +14,7 @@ import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.local.entities.PerfilEntity
 import com.example.controldealmacen.data.repository.PerfilRepository
+import com.example.controldealmacen.ui.SessionManager
 import com.example.controldealmacen.ui.inventory.ProductosActivity
 
 class MainActivity : AppCompatActivity() {
@@ -25,11 +26,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Preparamos el RecyclerView
+        // Al volver al estado de reposo, limpiamos cualquier sesión previa
+        SessionManager.clearSession()
+
         val rvEmpleados = findViewById<RecyclerView>(R.id.rv_empleados)
         rvEmpleados.layoutManager = GridLayoutManager(this, 4)
 
-        // 2. Inicializamos el Adapter con la lógica de clics
         adapter = PerfilAdapter(emptyList()) { perfilSeleccionado ->
             if (perfilSeleccionado.rol == "ADMINISTRADOR") {
                 mostrarDialogoContrasena(perfilSeleccionado)
@@ -39,50 +41,41 @@ class MainActivity : AppCompatActivity() {
         }
         rvEmpleados.adapter = adapter
 
-        // 3. Preparamos la Base de Datos y el Repositorio
         val database = AppDatabase.getDatabase(this)
         val repository = PerfilRepository(database.perfilDao())
 
-        // 4. Instanciamos el ViewModel
         val factory = LoginViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory)[LoginViewModel::class.java]
 
-        // 5. Observamos los datos (ESTO SE QUEDA SOLO)
         viewModel.perfiles.observe(this) { listaPerfiles ->
             adapter.actualizarDatos(listaPerfiles)
-        } // <-- Cerramos el observe aquí
+        }
 
-        // 6. Botón para registrar (FUERA DEL OBSERVE)
-        val btnNuevoEmpleado = findViewById<android.widget.Button>(R.id.btn_nuevo_empleado)
-        btnNuevoEmpleado.setOnClickListener {
-            val intent = android.content.Intent(this, RegistroActivity::class.java)
+        findViewById<android.widget.Button>(R.id.btn_nuevo_empleado).setOnClickListener {
+            val intent = Intent(this, RegistroActivity::class.java)
             startActivity(intent)
         }
     }
+
     private fun mostrarDialogoContrasena(perfil: PerfilEntity) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Acceso Administrador")
         builder.setMessage("Introduce la contraseña para ${perfil.nombre}:")
 
-        // Creamos el campo de texto para la contraseña
         val input = EditText(this)
-        // Configuramos para que salgan asteriscos (***)
         input.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         builder.setView(input)
 
-        // Botón de Entrar
-        builder.setPositiveButton("Entrar") { dialog, _ ->
+        builder.setPositiveButton("Entrar") { _, _ ->
             val passwordIntroducida = input.text.toString()
-
-            // Comprobamos si la contraseña es correcta
             if (passwordIntroducida == perfil.contrasena) {
+                SessionManager.isAdminAuthenticated = true
                 iniciarSesion(perfil)
             } else {
                 Toast.makeText(this, "Contraseña incorrecta", Toast.LENGTH_SHORT).show()
             }
         }
 
-        // Botón de Cancelar
         builder.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.cancel()
         }
@@ -91,20 +84,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun iniciarSesion(perfil: PerfilEntity) {
+        SessionManager.currentUserId = perfil.id
+        SessionManager.currentUserRol = perfil.rol
+        SessionManager.currentUserName = perfil.nombre
+
         Toast.makeText(this, "¡Bienvenido, ${perfil.nombre}!", Toast.LENGTH_SHORT).show()
 
-        // 1. Preparamos el viaje a la pantalla de tu compañero
         val intent = Intent(this, ProductosActivity::class.java)
-
-        // 2. Le pasamos por el Intent los datos que tu compañero necesita para buscar en el Historial
         intent.putExtra("ID_USUARIO", perfil.id)
-        intent.putExtra("ROL_USUARIO", perfil.rol)
-        intent.putExtra("NOMBRE_USUARIO", perfil.nombre)
-
-        // 3. Arrancamos la pantalla de productos
         startActivity(intent)
-
-        // 4. Cerramos esta pantalla para que el botón "Atrás" de Android no les devuelva aquí sin más
         finish()
     }
 }

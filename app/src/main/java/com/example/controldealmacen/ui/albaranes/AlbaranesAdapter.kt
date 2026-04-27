@@ -8,17 +8,18 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
-import com.example.controldealmacen.data.local.entities.AlbaranEntity
+import com.example.controldealmacen.data.local.entities.AlbaranConProveedor
 
 class AlbaranesAdapter(
-    private var albaranes: List<AlbaranEntity>,
-    private val onAlbaranClick: (AlbaranEntity) -> Unit
+    private var albaranesConProveedor: List<AlbaranConProveedor>,
+    private val onAlbaranClick: (AlbaranConProveedor) -> Unit
 ) : RecyclerView.Adapter<AlbaranesAdapter.AlbaranViewHolder>() {
 
     private var selectionMode = false
     private val selectedIds = mutableSetOf<Int>()
 
     class AlbaranViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvProveedor: TextView = view.findViewById(R.id.tv_albaran_proveedor)
         val tvImporte: TextView = view.findViewById(R.id.tv_albaran_importe)
         val tvEstado: TextView = view.findViewById(R.id.tv_albaran_estado)
         val checkBox: CheckBox = view.findViewById(R.id.cb_seleccion_albaran)
@@ -31,19 +32,25 @@ class AlbaranesAdapter(
     }
 
     override fun onBindViewHolder(holder: AlbaranViewHolder, position: Int) {
-        val albaran = albaranes[position]
+        val item = albaranesConProveedor[position]
+        val albaran = item.albaran
+        val proveedor = item.proveedor
 
+        holder.tvProveedor.text = proveedor.nombre
         holder.tvImporte.text = "${albaran.importe} €"
 
         if (albaran.pagado) {
-            holder.tvEstado.text = "Pagado"
+            holder.tvEstado.text = "PAGADO"
             holder.tvEstado.setTextColor(Color.parseColor("#4CAF50"))
+            holder.tvEstado.setBackgroundResource(android.R.drawable.editbox_dropdown_light_frame)
         } else {
-            holder.tvEstado.text = "Pendiente"
+            holder.tvEstado.text = "PENDIENTE"
             holder.tvEstado.setTextColor(Color.parseColor("#F44336"))
+            holder.tvEstado.setBackgroundResource(android.R.drawable.editbox_dropdown_dark_frame)
         }
 
         holder.checkBox.visibility = if (selectionMode) View.VISIBLE else View.GONE
+        holder.checkBox.setOnCheckedChangeListener(null)
         holder.checkBox.isChecked = selectedIds.contains(albaran.id)
 
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
@@ -54,15 +61,15 @@ class AlbaranesAdapter(
             if (selectionMode) {
                 holder.checkBox.isChecked = !holder.checkBox.isChecked
             } else {
-                onAlbaranClick(albaran)
+                onAlbaranClick(item)
             }
         }
     }
 
-    override fun getItemCount(): Int = albaranes.size
+    override fun getItemCount(): Int = albaranesConProveedor.size
 
-    fun updateData(newAlbaranes: List<AlbaranEntity>) {
-        this.albaranes = newAlbaranes
+    fun updateData(newItems: List<AlbaranConProveedor>) {
+        this.albaranesConProveedor = newItems
         notifyDataSetChanged()
     }
 

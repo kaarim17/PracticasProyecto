@@ -6,19 +6,18 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.ProductoEntity
+import com.example.controldealmacen.ui.BaseActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.launch
 
-class EditarProductoActivity : AppCompatActivity() {
+class EditarProductoActivity : BaseActivity() {
 
     private var productoId: Int = -1
     private lateinit var productoActual: ProductoEntity
 
-    // Aquí está la magia: el ViewModel en modo básico y limpio
     private val viewModel: ProductosViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
