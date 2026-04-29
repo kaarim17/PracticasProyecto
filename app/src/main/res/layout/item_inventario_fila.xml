@@ -3,42 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
+    android:minHeight="48dp"
+    android:gravity="center_vertical"
     android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/tv_inv_nombre"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="2"
+        android:padding="12dp"
         android:text="Nombre"
-        android:textColor="#333333" />
+        android:textColor="#333333"
+        android:gravity="center_vertical"
+        android:background="@drawable/bg_table_cell" />
 
     <TextView
         android:id="@+id/tv_inv_cantidad"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:padding="12dp"
         android:gravity="center"
         android:text="0"
-        android:textColor="#333333" />
+        android:textColor="#333333"
+        android:background="@drawable/bg_table_cell" />
 
     <TextView
         android:id="@+id/tv_inv_minima"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:padding="12dp"
         android:gravity="center"
         android:text="0"
-        android:textColor="#666666" />
+        android:textColor="#666666"
+        android:background="@drawable/bg_table_cell" />
 
     <TextView
         android:id="@+id/tv_inv_estado"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
+        android:padding="12dp"
         android:gravity="center"
         android:text="Activo"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_table_cell" />
 
 </LinearLayout>

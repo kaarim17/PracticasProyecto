@@ -12,6 +12,9 @@ class AlbaranRepository (private val albaranDao: AlbaranDao) {
     suspend fun getAlbaranesPendientes(): List<AlbaranEntity> = albaranDao.getAlbaranesPendientes()
     suspend fun getAlbaranesbyProveedor(idProveedor: Int): List<AlbaranEntity> = albaranDao.getAlbaranesbyProveedor(idProveedor)
     
+    suspend fun getAlbaranesConProveedor(): List<AlbaranConProveedor> = 
+        albaranDao.getAlbaranesConProveedor()
+
     suspend fun getAlbaranesConProveedorByIds(ids: List<Int>): List<AlbaranConProveedor> = 
         albaranDao.getAlbaranesConProveedorByIds(ids)
 }

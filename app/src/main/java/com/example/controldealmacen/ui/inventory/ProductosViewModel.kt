@@ -1,6 +1,7 @@
 package com.example.controldealmacen.ui.inventory
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -24,14 +25,20 @@ class ProductosViewModel(application: Application) : AndroidViewModel(applicatio
     fun cargarProductos(query: String = "", idUsuario: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val lista = if (query.isEmpty()) {
-                productoDao.getProductosHabilitados()
+                val historialReciente = historialDao.getLastInteraccionesByPerfil(idUsuario)
+                if (historialReciente.isNotEmpty()) {
+                    val ids = historialReciente.map { it.productoId }.distinct()
+                    productoDao.getProductosByIds(ids)
+                } else {
+                    productoDao.getProductosHabilitados()
+                }
             } else {
-
                 productoDao.searchProductos("%$query%")
             }
             _productos.postValue(lista)
         }
     }
+
     fun modificarStock(producto: ProductoEntity, cambio: Int, idUsuario: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val nuevaCantidad = producto.cantidad + cambio
@@ -51,6 +58,10 @@ class ProductosViewModel(application: Application) : AndroidViewModel(applicatio
                     )
                 )
                 cargarProductos("", idUsuario)
+            } else {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(getApplication(), "No puedes tener stock negativo", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

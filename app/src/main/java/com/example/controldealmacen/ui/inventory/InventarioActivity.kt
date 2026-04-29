@@ -2,17 +2,17 @@ package com.example.controldealmacen.ui.inventory
 
 import android.os.Bundle
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
+import com.example.controldealmacen.ui.BaseActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class InventarioActivity : AppCompatActivity() {
+class InventarioActivity : BaseActivity() {
 
     private lateinit var adapter: InventarioAdapter
     private lateinit var rvInventario: RecyclerView

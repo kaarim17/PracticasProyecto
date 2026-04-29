@@ -10,17 +10,17 @@ import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.local.entities.HistorialEntity
 import com.example.controldealmacen.data.local.entities.ProductoEntity
+import com.example.controldealmacen.ui.BaseActivity
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
-class AddProductoActivity : AppCompatActivity() {
+class AddProductoActivity : BaseActivity() {
 
     private val viewModel: ProductosViewModel by viewModels()
 

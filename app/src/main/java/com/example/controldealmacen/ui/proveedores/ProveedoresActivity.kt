@@ -4,13 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
+import com.example.controldealmacen.ui.BaseActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-class ProveedoresActivity : AppCompatActivity() {
+class ProveedoresActivity : BaseActivity() {
 
     private val viewModel: ProveedorViewModel by viewModels()
     private lateinit var adapter: ProveedoresAdapter

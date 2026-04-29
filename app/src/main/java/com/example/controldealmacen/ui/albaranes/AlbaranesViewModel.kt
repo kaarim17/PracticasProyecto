@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.controldealmacen.data.local.AppDatabase
+import com.example.controldealmacen.data.local.entities.AlbaranConProveedor
 import com.example.controldealmacen.data.local.entities.AlbaranEntity
 import com.example.controldealmacen.data.repository.AlbaranRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,8 @@ import java.util.Calendar
 class AlbaranesViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: AlbaranRepository
-    private val _albaranes = MutableLiveData<List<AlbaranEntity>>()
-    val albaranes: LiveData<List<AlbaranEntity>> get() = _albaranes
+    private val _albaranesConProveedor = MutableLiveData<List<AlbaranConProveedor>>()
+    val albaranesConProveedor: LiveData<List<AlbaranConProveedor>> get() = _albaranesConProveedor
 
     init {
         val albaranDao = AppDatabase.getDatabase(application).albaranDao()
@@ -25,39 +26,39 @@ class AlbaranesViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun cargarAlbaranes(filtro: String = "TODOS", fechaInicio: Long? = null, fechaFin: Long? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            val todosLosAlbaranes = repository.getAlbaranes()
-            val ahora = System.currentTimeMillis()
-
+            // REQUISITO SPRINT 4: Usamos la relación para ver el nombre del proveedor
+            val todosConProveedor = repository.getAlbaranesConProveedor()
+            
             val listaFiltrada = when (filtro) {
                 "MES" -> {
-                    val cal = Calendar.getInstance()
-                    cal.set(Calendar.DAY_OF_MONTH, 1)
-                    cal.set(Calendar.HOUR_OF_DAY, 0)
-                    cal.set(Calendar.MINUTE, 0)
-                    cal.set(Calendar.SECOND, 0)
-                    val inicioMes = cal.timeInMillis
-                    todosLosAlbaranes.filter { it.fecha >= inicioMes }
+                    val cal = Calendar.getInstance().apply {
+                        set(Calendar.DAY_OF_MONTH, 1)
+                        set(Calendar.HOUR_OF_DAY, 0)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
+                    }
+                    todosConProveedor.filter { it.albaran.fecha >= cal.timeInMillis }
                 }
                 "SEMANA" -> {
-                    val cal = Calendar.getInstance()
-                    cal.set(Calendar.DAY_OF_WEEK, cal.firstDayOfWeek)
-                    cal.set(Calendar.HOUR_OF_DAY, 0)
-                    cal.set(Calendar.MINUTE, 0)
-                    cal.set(Calendar.SECOND, 0)
-                    val inicioSemana = cal.timeInMillis
-                    todosLosAlbaranes.filter { it.fecha >= inicioSemana }
+                    val cal = Calendar.getInstance().apply {
+                        set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+                        set(Calendar.HOUR_OF_DAY, 0)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
+                    }
+                    todosConProveedor.filter { it.albaran.fecha >= cal.timeInMillis }
                 }
                 "RANGO" -> {
                     if (fechaInicio != null && fechaFin != null) {
-                        todosLosAlbaranes.filter { it.fecha in fechaInicio..fechaFin }
+                        todosConProveedor.filter { it.albaran.fecha in fechaInicio..fechaFin }
                     } else {
-                        todosLosAlbaranes
+                        todosConProveedor
                     }
                 }
-                else -> todosLosAlbaranes // "TODOS"
+                else -> todosConProveedor
             }
 
-            _albaranes.postValue(listaFiltrada)
+            _albaranesConProveedor.postValue(listaFiltrada)
         }
     }
 
@@ -68,9 +69,14 @@ class AlbaranesViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun actualizarAlbaran(albaran: AlbaranEntity) {
+    fun marcarComoPagado(albaran: AlbaranEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateAlbaran(albaran)
+            // REQUISITO SPRINT 4: Registrar marca temporal del pago
+            val albaranActualizado = albaran.copy(
+                pagado = true,
+                fechaPago = System.currentTimeMillis()
+            )
+            repository.updateAlbaran(albaranActualizado)
             cargarAlbaranes()
         }
     }

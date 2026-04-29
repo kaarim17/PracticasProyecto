@@ -5,11 +5,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.entities.ProveedorEntity
+import com.example.controldealmacen.ui.BaseActivity
 
-class AddProveedorActivity : AppCompatActivity() {
+class AddProveedorActivity : BaseActivity() {
 
     private val viewModel: ProveedorViewModel by viewModels()
 

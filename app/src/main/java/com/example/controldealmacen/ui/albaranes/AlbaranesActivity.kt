@@ -6,19 +6,22 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
-import com.example.controldealmacen.data.local.entities.AlbaranEntity
+import com.example.controldealmacen.data.local.entities.AlbaranConProveedor
+import com.example.controldealmacen.ui.BaseActivity
+import com.example.controldealmacen.ui.SessionManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Calendar
 
-class AlbaranesActivity : AppCompatActivity() {
+class AlbaranesActivity : BaseActivity() {
 
     private val viewModel: AlbaranesViewModel by viewModels()
     private lateinit var adapter: AlbaranesAdapter
@@ -33,8 +36,7 @@ class AlbaranesActivity : AppCompatActivity() {
         setupObservers()
 
         findViewById<FloatingActionButton>(R.id.fab_add_albaran).setOnClickListener {
-            val intent = Intent(this, AddAlbaranActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, AddAlbaranActivity::class.java))
         }
 
         findViewById<Button>(R.id.btn_modo_informe).setOnClickListener {
@@ -47,7 +49,7 @@ class AlbaranesActivity : AppCompatActivity() {
                 val intent = Intent(this, ResumenInformeActivity::class.java)
                 intent.putIntegerArrayListExtra("SELECTED_IDS", ArrayList(selectedIds))
                 startActivity(intent)
-                toggleSelectionMode() // Salir del modo selección tras generar
+                toggleSelectionMode() 
             } else {
                 Toast.makeText(this, "Selecciona al menos un albarán", Toast.LENGTH_SHORT).show()
             }
@@ -82,30 +84,23 @@ class AlbaranesActivity : AppCompatActivity() {
         val rvAlbaranes = findViewById<RecyclerView>(R.id.rv_albaranes)
         rvAlbaranes.layoutManager = LinearLayoutManager(this)
 
-        adapter = AlbaranesAdapter(emptyList()) { albaranTocado ->
-            mostrarFotoEnGrande(albaranTocado)
+        adapter = AlbaranesAdapter(emptyList()) { itemTocado ->
+            mostrarDetalleAlbaran(itemTocado)
         }
         rvAlbaranes.adapter = adapter
     }
 
     private fun setupObservers() {
-        viewModel.albaranes.observe(this) { lista ->
+        viewModel.albaranesConProveedor.observe(this) { lista ->
             adapter.updateData(lista)
         }
     }
 
     private fun setupFiltros() {
-        findViewById<Button>(R.id.btn_filtro_todos).setOnClickListener {
-            viewModel.cargarAlbaranes("TODOS")
-        }
-        findViewById<Button>(R.id.btn_filtro_mes).setOnClickListener {
-            viewModel.cargarAlbaranes("MES")
-        }
-        findViewById<Button>(R.id.btn_filtro_semana).setOnClickListener {
-            viewModel.cargarAlbaranes("SEMANA")
-        }
+        findViewById<Button>(R.id.btn_filtro_todos).setOnClickListener { viewModel.cargarAlbaranes("TODOS") }
+        findViewById<Button>(R.id.btn_filtro_mes).setOnClickListener { viewModel.cargarAlbaranes("MES") }
+        findViewById<Button>(R.id.btn_filtro_semana).setOnClickListener { viewModel.cargarAlbaranes("SEMANA") }
         
-        // Añadimos clic largo en "Todos" o un botón específico para rango
         findViewById<Button>(R.id.btn_filtro_todos).setOnLongClickListener {
             mostrarSelectorRango()
             true
@@ -114,44 +109,46 @@ class AlbaranesActivity : AppCompatActivity() {
 
     private fun mostrarSelectorRango() {
         val cal = Calendar.getInstance()
-        
-        // Seleccionar Fecha Inicio
         DatePickerDialog(this, { _, year, month, day ->
-            val inicio = Calendar.getInstance()
-            inicio.set(year, month, day, 0, 0, 0)
-            
-            // Seleccionar Fecha Fin
+            val inicio = Calendar.getInstance().apply { set(year, month, day, 0, 0, 0) }
             DatePickerDialog(this, { _, yearF, monthF, dayF ->
-                val fin = Calendar.getInstance()
-                fin.set(yearF, monthF, dayF, 23, 59, 59)
-                
+                val fin = Calendar.getInstance().apply { set(yearF, monthF, dayF, 23, 59, 59) }
                 viewModel.cargarAlbaranes("RANGO", inicio.timeInMillis, fin.timeInMillis)
-                Toast.makeText(this, "Filtrando rango seleccionado", Toast.LENGTH_SHORT).show()
-                
-            }, year, month, day).apply {
-                setTitle("Fecha Fin")
-                show()
-            }
-            
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).apply {
-            setTitle("Fecha Inicio")
-            show()
-        }
+            }, year, month, day).show()
+        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show()
     }
 
-    private fun mostrarFotoEnGrande(albaran: AlbaranEntity) {
-        val imageView = ImageView(this)
-        try {
-            imageView.setImageURI(Uri.parse(albaran.foto))
-            imageView.setPadding(16, 16, 16, 16)
-
-            AlertDialog.Builder(this)
-                .setTitle("Albarán de ${albaran.importe}€")
-                .setView(imageView)
-                .setPositiveButton("Cerrar", null)
-                .show()
-        } catch (e: Exception) {
-            Toast.makeText(this, "No se puede cargar la imagen", Toast.LENGTH_SHORT).show()
+    private fun mostrarDetalleAlbaran(item: AlbaranConProveedor) {
+        val albaran = item.albaran
+        val builder = AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.activity_add_albaran, null)
+        
+        view.findViewById<TextView>(R.id.tv_titulo_add_albaran)?.text = "Detalle de Albarán"
+        view.findViewById<ImageView>(R.id.iv_albaran_foto).setImageURI(Uri.parse(albaran.foto))
+        view.findViewById<EditText>(R.id.et_albaran_importe).apply {
+            setText(albaran.importe.toString())
+            isEnabled = false
         }
+        view.findViewById<View>(R.id.sp_proveedores).visibility = View.GONE
+        view.findViewById<Button>(R.id.btn_foto_albaran).visibility = View.GONE
+        
+        val btnGuardar = view.findViewById<Button>(R.id.btn_guardar_albaran)
+        
+        if (!albaran.pagado && SessionManager.currentUserRol == "ADMINISTRADOR") {
+            btnGuardar.text = "MARCAR COMO PAGADO"
+            btnGuardar.visibility = View.VISIBLE
+        } else {
+            btnGuardar.visibility = View.GONE
+        }
+
+        val dialog = builder.setView(view).create()
+
+        btnGuardar.setOnClickListener {
+            viewModel.marcarComoPagado(albaran)
+            dialog.dismiss()
+            Toast.makeText(this, "Albarán pagado", Toast.LENGTH_SHORT).show()
+        }
+
+        dialog.show()
     }
 }

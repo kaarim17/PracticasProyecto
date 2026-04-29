@@ -3,15 +3,14 @@ package com.example.controldealmacen.ui.albaranes
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.controldealmacen.R
 import com.example.controldealmacen.data.local.AppDatabase
 import com.example.controldealmacen.data.repository.AlbaranRepository
+import com.example.controldealmacen.ui.BaseActivity
 import kotlinx.coroutines.launch
 
-class ResumenInformeActivity : AppCompatActivity() {
+class ResumenInformeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
