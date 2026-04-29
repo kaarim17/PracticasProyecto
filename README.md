@@ -1,11 +1,33 @@
-Control de Almacén (Proyecto Prácticas)
-Trabajamos en un proyecto para la gestión de un almacén en Tablet. La idea es que sea una herramienta rápida para que los empleados puedan controlar el stock, escanear productos y registrar albaranes sin complicaciones y de manera sencilla (Con un dedo).
+Control de Almacén
+Proyecto Final de Prácticas - Grado Superior
 
-¿Cómo vamos? (Sprint 2)
-Estamos ultimando los detalles para dar por finalizado el Sprint 2. 
+App sencilla para que los trabajadores de un almacén gestionen el stock sin complicaciones, usando solo un dedo.
 
-¿Que estamos usando?
-Kotlin como lenguaje principal.
-Room para guardar los datos localmente.
-KSP para que el proyecto compile rápido y sin fallos modernos de Gradle.
-Material Design para que la interfaz se vea limpia en la tablet.
+Estado del Proyecto (Sprint 5 - Finalizado)
+Hemos completado todos los ciclos de desarrollo, cumpliendo con los objetivos de arquitectura, funcionalidad y seguridad. Ahora nos falta preparar la entrega final.
+
+FUNCIONALIDADES
+Lista de Productos: Ver todo lo que hay en el almacén con fotos y cantidades.
+
+Sumar y Restar: Botones grandes para cambiar el stock rápido.
+
+Avisos Automáticos: El móvil te avisa con una notificación si te estás quedando sin algún producto.
+
+Informe del Mes: Una pantalla que te dice cuánto ha entrado y cuánto ha salido cada mes.
+
+Albaranes y Proveedores: Registro de los papeles de entrada y de quién nos vende la mercancía.
+
+Cierre de Sesión: Si dejas la tablet encendida, se cierra sola a los 10 minutos por seguridad.
+
+¿QUE HEMOS USADO?
+Lenguaje: Kotlin (100%)
+
+Base de Datos: Room Persistence Library para almacenamiento local offline.
+
+Arquitectura: MVVM (Model-View-ViewModel) con arquitectura limpia.
+
+Procesamiento: KSP  para una compilación eficiente.
+
+UI: Material Design con componentes adaptativos para tablets.
+
+Notificaciones: NotificationManager API para alertas de sistema.
