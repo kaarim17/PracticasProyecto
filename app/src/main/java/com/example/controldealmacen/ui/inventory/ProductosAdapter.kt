@@ -39,7 +39,7 @@ class ProductosAdapter(
         holder.tvNombre.text = producto.nombre
         holder.tvStock.text = "Cantidad: ${producto.cantidad}"
 
-        // Mostrar aviso de stock bajo si tiene límite mínimo y la cantidad es menor o igual
+        // Aviso de stock bajo si tiene límite mínimo y la cantidad es menor o igual
         if (producto.cantidadMinima != null && producto.cantidad <= producto.cantidadMinima) {
             holder.tvAvisoMinimo.visibility = View.VISIBLE
         } else {
@@ -69,7 +69,6 @@ class ProductosAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = android.content.Intent(holder.itemView.context, EditarProductoActivity::class.java)
-            // Le pasamos el ID del producto para que sepa cuál tiene que cargar
             intent.putExtra("ID_PRODUCTO", producto.id)
             holder.itemView.context.startActivity(intent)
         }

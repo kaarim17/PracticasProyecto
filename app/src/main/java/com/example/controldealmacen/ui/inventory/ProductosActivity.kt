@@ -13,13 +13,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.controldealmacen.R
+import com.example.controldealmacen.ui.NotificationHelper
 import com.example.controldealmacen.ui.auth.MainActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+
 
 class ProductosActivity : AppCompatActivity() {
 
     private val viewModel: ProductosViewModel by viewModels()
     private lateinit var adapter: ProductosAdapter
+    private lateinit var notificationHelper: NotificationHelper
     private var idUsuarioActivo: Int = -1
 
     private val handlerTimeout = Handler(Looper.getMainLooper())
@@ -36,6 +39,7 @@ class ProductosActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_productos)
+        notificationHelper = NotificationHelper(this)
 
         idUsuarioActivo = intent.getIntExtra("ID_USUARIO", -1)
 
@@ -44,6 +48,12 @@ class ProductosActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
             return
+        }
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
+            }
         }
 
         setupRecyclerView()
@@ -76,7 +86,16 @@ class ProductosActivity : AppCompatActivity() {
                 viewModel.modificarStock(producto, 1, idUsuarioActivo)
             },
             onRemoveClick = { producto ->
-                viewModel.modificarStock(producto, -1, idUsuarioActivo)
+                if (producto.cantidad > 0) {
+                    val stockTrasResta = producto.cantidad - 1
+
+                    if (producto.cantidadMinima != null && stockTrasResta <= producto.cantidadMinima) {
+                        notificationHelper.enviarAlertaStock(producto.nombre, stockTrasResta)
+                    }
+                    viewModel.modificarStock(producto, -1, idUsuarioActivo)
+                } else {
+                    Toast.makeText(this, "Stock agotado para ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                }
             }
         )
         rvProductos.adapter = adapter
@@ -103,15 +122,15 @@ class ProductosActivity : AppCompatActivity() {
         }
 
         fab.setOnLongClickListener {
-            val opciones = arrayOf("Ver Inventario (Excel)", "Gestión de Proveedores", "Gestión de Albaranes")
-
+            val opciones = arrayOf("Ver Inventario General", "Informe Mensual de Stock", "Gestión de Proveedores", "Gestión de Albaranes")
             androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Menú Avanzado")
                 .setItems(opciones) { _, opcionElegida ->
                     when (opcionElegida) {
                         0 -> startActivity(Intent(this, InventarioActivity::class.java))
-                        1 -> startActivity(Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java))
-                        2 -> startActivity(Intent(this, com.example.controldealmacen.ui.albaranes.AlbaranesActivity::class.java))
+                        1 -> startActivity(Intent(this, InformeMensualActivity::class.java)) // <--- ¡AÑADIMOS EL INFORME AQUÍ!
+                        2 -> startActivity(Intent(this, com.example.controldealmacen.ui.proveedores.ProveedoresActivity::class.java))
+                        3 -> startActivity(Intent(this, com.example.controldealmacen.ui.albaranes.AlbaranesActivity::class.java))
                     }
                 }
                 .show()

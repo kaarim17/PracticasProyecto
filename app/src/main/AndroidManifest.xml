@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.controldealmacen">
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -27,6 +27,7 @@
         <activity android:name=".ui.inventory.AddProductoActivity" />
         <activity android:name=".ui.inventory.EditarProductoActivity" />
         <activity android:name=".ui.inventory.InventarioActivity" />
+        <activity android:name=".ui.inventory.InformeMensualActivity" />
 
         <activity android:name=".ui.auth.RegistroActivity" />
         <activity android:name=".ui.auth.GestionPerfilesActivity" />
